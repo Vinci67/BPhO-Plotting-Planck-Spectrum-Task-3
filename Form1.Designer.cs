@@ -32,6 +32,7 @@
             formsPlot1 = new ScottPlot.WinForms.FormsPlot();
             textBox1 = new TextBox();
             buttonAddLine = new Button();
+            checkedListBox1 = new CheckedListBox();
             SuspendLayout();
             // 
             // formsPlot1
@@ -58,11 +59,22 @@
             buttonAddLine.Text = "Add Line";
             buttonAddLine.UseVisualStyleBackColor = true;
             // 
+            // checkedListBox1
+            // 
+            checkedListBox1.CheckOnClick = true;
+            checkedListBox1.FormattingEnabled = true;
+            checkedListBox1.Items.AddRange(new object[] { "Proxima Centauri - 3050K", "Sun - 5800K", "Sirius - 10000K", "Rigel - 12000K" });
+            checkedListBox1.Location = new Point(612, 71);
+            checkedListBox1.Name = "checkedListBox1";
+            checkedListBox1.Size = new Size(162, 114);
+            checkedListBox1.TabIndex = 3;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(checkedListBox1);
             Controls.Add(buttonAddLine);
             Controls.Add(textBox1);
             Controls.Add(formsPlot1);
@@ -77,5 +89,6 @@
         private ScottPlot.WinForms.FormsPlot formsPlot1;
         private TextBox textBox1;
         private Button buttonAddLine;
+        private CheckedListBox checkedListBox1;
     }
 }

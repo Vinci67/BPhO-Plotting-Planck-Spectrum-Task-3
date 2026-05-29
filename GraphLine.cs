@@ -11,6 +11,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
     {
         public ScottPlot.Plottables.Scatter line;
         private double temperature;
+        public double getTemp { get => temperature; }
         public TrackBar slider;
         private double SCALE = 100;
         private double h = 6.626E-34;
@@ -23,8 +24,9 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private double[] dataWalength;
         private double[] dataWavelengthPlotting;
         private double[] irradiance;
+        public string id;
 
-        public GraphLine(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color, Form1 form, ScottPlot.WinForms.FormsPlot scottForm)
+        public GraphLine(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id)
         {
             colour = color;
             temperature = temp;
@@ -32,7 +34,8 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             this.scottForm = scottForm;
             this.maxWavelength = maxWavelength;
             line = generatePlot(scottForm, minWavelength,maxWavelength, temp, color);
-            slider = generateSlider(form,0,100);
+            slider = generateSlider(form,0,120);
+            this.id = id;
         }
         private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm, double minWavelength, double maxWavelength, double temp, ScottPlot.Color color)
         {
@@ -50,7 +53,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
             var line = scottForm.Plot.Add.Scatter(dataWavelengthPlotting, irradiance);
             line.Color = color;
-            line.Label = Convert.ToString(temp);
+            line.Label = $"T: {temp}K";
             
             scottForm.Refresh();
             return line;
@@ -97,7 +100,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             }
             //line.Data.GetScatterPoints().
             
-            line.Label = temperature.ToString();
+            line.Label = $"T: {temperature}K";
             scottForm.Refresh();
         }
         private double plankSpectrumEquation(double wavelength, double temp)

@@ -48,8 +48,11 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 int specificGraphI = 0;
                 for (int i = 0; i < graphs.Count; i++) 
                 {
-                    if (toggleForMouse == false) graphs[i].slider.Visible = false;
-
+                    if (toggleForMouse == false)
+                    {
+                        graphs[i].slider.Visible = false;
+                        graphs[i].unhighlightLine();
+                    }
                     DataPoint nearest = rbNearestXY
                        ? graphs[i].line.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
                        : graphs[i].line.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
@@ -67,6 +70,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 {
                     if (toggleForMouse == false)
                     {
+                        graphs[specificGraphI].highlightLine();
                         graphs[specificGraphI].slider.Visible = true;
                         crosshair.IsVisible = true;
                         crosshair.Position = closestPoint.Coordinates;

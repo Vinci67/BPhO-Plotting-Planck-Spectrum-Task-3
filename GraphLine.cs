@@ -105,5 +105,15 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             //Should return spectural Irradiance 
             return 1E-13 * Math.PI * (2 * h * c * c) / (Math.Pow(wavelength, 5)) * (1 / (Math.Exp(h * c / (wavelength * kB * temp)) - 1.0)); // return in nm *E4
         }
+
+        public void highlightLine()
+        {
+            line.Color = ScottPlot.Colors.Gray;
+        }
+
+        public void unhighlightLine()
+        {
+            line.Color = colour;
+        }
     }
 }

@@ -66,6 +66,10 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             slider.Scroll += new EventHandler(SliderScroll);
             slider.Minimum = min;
             slider.Maximum = max;
+            int value = (int)((temperature - 100) / SCALE);
+            if (value < min) value = min;
+            else if (value > max) value = max;
+            slider.Value = value;
             scottForm.Controls.Add(slider);
             slider.BringToFront();
             

@@ -10,7 +10,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
     public partial class Form1 : Form
     {
-        public ScottPlot.Color colo = new(1, 2, 3);
+       
         public double h = 6.626E-34;
         public double kB = 1.381E-23;
         public double c = 2.998E8;
@@ -27,10 +27,10 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         {
             
             InitializeComponent();
-            graphs.Add(generateLine(minW, maxW, 4000, ScottPlot.Colors.Blue, "generic"));
-            graphs.Add(generateLine(minW, maxW, 5000, ScottPlot.Colors.Orange, "generic"));
-            graphs.Add(generateLine(minW, maxW, 6000, ScottPlot.Colors.Red, "generic"));
-            graphs.Add(generateLine(minW, maxW, 8000, Colors.Green, "generic"));
+            graphs.Add(generateLine(minW, maxW, 4000, "generic"));
+            graphs.Add(generateLine(minW, maxW, 5000, "generic"));
+            graphs.Add(generateLine(minW, maxW, 6000, "generic"));
+            graphs.Add(generateLine(minW, maxW, 8000, "generic"));
             formsPlot1.Plot.XLabel("Wavelength / nm");
             formsPlot1.Plot.YLabel("Irradiance / Wm^-2/nm     x10^4");
             formsPlot1.Plot.Title("Solar Irradiance vs Wavelength");
@@ -103,7 +103,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             buttonAddLine.Click += (s, e) =>
             {
 
-                graphs.Add(generateLine(minW, maxW, rand.Next(1, 100) * 100, ScottPlot.Color.RandomHue(), "generic"));
+                graphs.Add(generateLine(minW, maxW, rand.Next(1, 100) * 100, "generic"));
             };
            
             checkedListBox1.ItemCheck += (s, e) => updateCheckList(s,e);
@@ -141,7 +141,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             {
                 checklistPrev.Add(currentItem);
                 double temp = int.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
-                graphs.Add(generateLine(minW, maxW, temp, ScottPlot.Color.RandomHue(), currentItem));
+                graphs.Add(generateLine(minW, maxW, temp, currentItem));
             }
         }
         public double plankSpectrumEquation(double wavelength, double temp)
@@ -150,9 +150,9 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             return 1E-13 * Math.PI * (2 * h * c * c) / (Math.Pow(wavelength, 5)) * (1 / (Math.Exp(h * c / (wavelength * kB * temp)) - 1.0)); // return in nm *E4
         }
 
-        private GraphLine generateLine(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color, string id)
+        private GraphLine generateLine(double minWavelength, double maxWavelength, double temp, string id)
         {
-            GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, color, this, formsPlot1, id);
+            GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, this, formsPlot1, id);
 
             return line;
         }

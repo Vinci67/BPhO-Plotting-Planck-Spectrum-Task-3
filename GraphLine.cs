@@ -25,35 +25,55 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private double[] dataWavelengthPlotting;
         private double[] irradiance;
         public string id;
+        
+        private double highestIndex = 0;
+        static private int datapoints = 1000;
+        private double datapointsInvisibleRange = 0;
+        private double minVisW = 0;
+        private double maxVisW = 750E-9;
 
-        public GraphLine(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id)
+        public GraphLine(double minWavelength, double maxWavelength, double temp, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id)
         {
-            colour = color;
+
             temperature = temp;
             this.minWavelength = minWavelength;
             this.scottForm = scottForm;
             this.maxWavelength = maxWavelength;
-            line = generatePlot(scottForm, minWavelength,maxWavelength, temp, color);
+            
+            line = generatePlot(scottForm, minWavelength,maxWavelength, temp);
             slider = generateSlider(form,0,120);
             this.id = id;
-            //setColBasedOnValue();
+            
         }
-        private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm, double minWavelength, double maxWavelength, double temp, ScottPlot.Color color)
+        private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm, double minWavelength, double maxWavelength, double temp)
         {
 
             
 
-            dataWalength = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength, maxWavelength);
-            dataWavelengthPlotting = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength * 1E9, maxWavelength * 1E9); // l in nm
+            dataWalength = MathNet.Numerics.Generate.LinearSpaced(datapoints, minWavelength, maxWavelength);
+            dataWavelengthPlotting = MathNet.Numerics.Generate.LinearSpaced(datapoints, minWavelength * 1E9, maxWavelength * 1E9); // l in nm
             irradiance = new double[dataWalength.Length];
-
+            double highestI = 0;
             for (int i = 0; i < dataWalength.Length; i++)
             {
                 irradiance[i] = plankSpectrumEquation(dataWalength[i], temp);
+
+                if (dataWalength[i] > minVisW && dataWalength[i] < maxVisW)
+                {
+                    datapointsInvisibleRange++;
+                    if (irradiance[i] > highestI)
+                    {
+                        highestI = irradiance[i];
+                        highestIndex = datapointsInvisibleRange;
+                    }
+                }
+                
             }
 
             var line = scottForm.Plot.Add.Scatter(dataWavelengthPlotting, irradiance);
-            line.Color = color;
+            setColBasedOnValue();
+            line.Color = colour;
+            
             line.Label = $"T: {temp}K";
             
             scottForm.Refresh();
@@ -94,11 +114,26 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             dataWalength = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength, maxWavelength);
             dataWavelengthPlotting = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength * 1E9, maxWavelength * 1E9); // l in nm
             //line = scottForm.Plot.Add.Scatter(dataWavelengthPlotting, irradiance);
+            double highestI = 0;
+            datapointsInvisibleRange = 0;
             for (int i = 0; i < dataWalength.Length; i++)
             {
                 irradiance[i] = plankSpectrumEquation(dataWalength[i], temperature);
-                
+
+                if (dataWalength[i] > minVisW && dataWalength[i] < maxVisW)
+                {
+                    datapointsInvisibleRange++;
+                    if (irradiance[i] > highestI)
+                    {
+                        highestI = irradiance[i];
+                        highestIndex = datapointsInvisibleRange;
+                    }
+                }
+
             }
+            Debug.WriteLine("Hello");
+            setColBasedOnValue();
+            line.Color = colour;
             //line.Data.GetScatterPoints().
             
             line.Label = $"T: {temperature}K";
@@ -126,11 +161,17 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
         }
 
-        //private void setColBasedOnValue()
-        //{
-        //    double proportion = Convert.ToDouble(line.Data.GetLimitsY().Value2.ToString());
-        //    Debug.WriteLine(proportion);
-        //    //new ScottPlot.Color = new()
-        //}
+        private void setColBasedOnValue()
+        {
+            double proportion = ((double)highestIndex / (double)datapointsInvisibleRange);
+            double scalar = Math.Log10(proportion);
+            colour = new((byte)((proportion)*255), (byte)50, (byte)((1 - proportion) * 255));
+            
+            Debug.WriteLine(proportion);
+            Debug.WriteLine(highestIndex);
+            Debug.WriteLine((proportion) * 255);
+            
+            //new ScottPlot.Color = new()
+        }
     }
 }

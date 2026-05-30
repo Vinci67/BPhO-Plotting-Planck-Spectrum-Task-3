@@ -64,7 +64,7 @@
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.FormattingEnabled = true;
             checkedListBox1.Items.AddRange(new object[] { "Proxima Centauri - 3050K", "Sun - 5800K", "Sirius - 10000K", "Rigel - 12000K" });
-            checkedListBox1.Location = new Point(612, 71);
+            checkedListBox1.Location = new Point(528, 36);
             checkedListBox1.Name = "checkedListBox1";
             checkedListBox1.Size = new Size(162, 114);
             checkedListBox1.TabIndex = 3;

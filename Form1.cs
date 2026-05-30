@@ -10,6 +10,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
     public partial class Form1 : Form
     {
+        public ScottPlot.Color colo = new(1, 2, 3);
         public double h = 6.626E-34;
         public double kB = 1.381E-23;
         public double c = 2.998E8;
@@ -128,6 +129,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                         Debug.WriteLine("Removed Line");
                         formsPlot1.Plot.Remove(line.line);
                         graphs.Remove(line);
+                        line.Dispose();
                         checklistPrev.Remove(currentItem);
                         formsPlot1.Refresh();
                         break;
@@ -139,7 +141,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             {
                 checklistPrev.Add(currentItem);
                 double temp = int.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
-                graphs.Add(generateLine(minW, maxW, temp, Colors.GreenYellow, currentItem));
+                graphs.Add(generateLine(minW, maxW, temp, ScottPlot.Color.RandomHue(), currentItem));
             }
         }
         public double plankSpectrumEquation(double wavelength, double temp)

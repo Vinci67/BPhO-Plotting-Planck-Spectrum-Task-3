@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BPhO__Plotting_Planck_Spectrum_Task_3
 {
-    internal class GraphLine
+    internal class GraphLine : IDisposable
     {
         public ScottPlot.Plottables.Scatter line;
         private double temperature;
@@ -36,6 +36,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             line = generatePlot(scottForm, minWavelength,maxWavelength, temp, color);
             slider = generateSlider(form,0,120);
             this.id = id;
+            //setColBasedOnValue();
         }
         private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm, double minWavelength, double maxWavelength, double temp, ScottPlot.Color color)
         {
@@ -118,5 +119,18 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         {
             line.Color = colour;
         }
+
+        public void Dispose()
+        {
+            slider.Dispose();
+
+        }
+
+        //private void setColBasedOnValue()
+        //{
+        //    double proportion = Convert.ToDouble(line.Data.GetLimitsY().Value2.ToString());
+        //    Debug.WriteLine(proportion);
+        //    //new ScottPlot.Color = new()
+        //}
     }
 }

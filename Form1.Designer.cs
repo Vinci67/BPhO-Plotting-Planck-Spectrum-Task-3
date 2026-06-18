@@ -33,6 +33,7 @@
             textBox1 = new TextBox();
             buttonAddLine = new Button();
             checkedListBox1 = new CheckedListBox();
+            button1 = new Button();
             SuspendLayout();
             // 
             // formsPlot1
@@ -69,11 +70,22 @@
             checkedListBox1.Size = new Size(162, 114);
             checkedListBox1.TabIndex = 3;
             // 
+            // button1
+            // 
+            button1.Location = new Point(689, 62);
+            button1.Name = "button1";
+            button1.Size = new Size(85, 51);
+            button1.TabIndex = 4;
+            button1.Text = "Hide Crosshair";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button1);
             Controls.Add(checkedListBox1);
             Controls.Add(buttonAddLine);
             Controls.Add(textBox1);
@@ -90,5 +102,6 @@
         private TextBox textBox1;
         private Button buttonAddLine;
         private CheckedListBox checkedListBox1;
+        private Button button1;
     }
 }

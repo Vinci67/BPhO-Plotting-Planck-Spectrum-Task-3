@@ -10,7 +10,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
     public partial class Form1 : Form
     {
-       
+
         public double h = 6.626E-34;
         public double kB = 1.381E-23;
         public double c = 2.998E8;
@@ -23,9 +23,11 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private bool toggleForMouse = false;
         private Random rand = new Random();
         private List<string> checklistPrev = new List<string>();
+        private bool showCrosshair = true;
+
         public Form1()
         {
-            
+
             InitializeComponent();
             graphs.Add(generateLine(minW, maxW, 4000, "generic"));
             graphs.Add(generateLine(minW, maxW, 5000, "generic"));
@@ -39,57 +41,11 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             crosshair.IsVisible = true;
             crosshair.MarkerShape = MarkerShape.OpenCircle;
             crosshair.MarkerSize = 15;
-            formsPlot1.MouseMove += (s, e) =>
-            {
-
-                Pixel mousePixel = new(e.Location.X, e.Location.Y);
-                Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
-                DataPoint closestPoint = DataPoint.None;
-                double closestDistance2 = double.MaxValue;
-                int specificGraphI = 0;
-                for (int i = 0; i < graphs.Count; i++)
-                {
-                    if (toggleForMouse == false)
-                    {
-                        graphs[i].unhighlightLine();
-                    }
-                    DataPoint nearest = rbNearestXY
-                       ? graphs[i].line.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
-                       : graphs[i].line.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
-                    double distance2 = Math.Pow(nearest.X - mouseLocation.X, 2) + Math.Pow(nearest.Y - mouseLocation.Y, 2);
-                    if (distance2 < closestDistance2)
-                    {
-                        specificGraphI = i;
-                        closestDistance2 = distance2;
-                        closestPoint = nearest;
-                    }
-                }
-
-
-                if (closestPoint.IsReal)
-                {
-                    if (toggleForMouse == false)
-                    {
-                        graphs[specificGraphI].highlightLine();
-                        
-                        crosshair.IsVisible = true;
-                        crosshair.Position = closestPoint.Coordinates;
-                        formsPlot1.Refresh();
-                        Text = $"Wavelength={closestPoint.X:0.##}nm, Y={closestPoint.Y * 1E4:0.##}Wm^-2/nm";//Selected Index={closestPoint.Index},
-                    }
-
-
-                }
-                if (!closestPoint.IsReal && crosshair.IsVisible)
-                {
-                    crosshair.IsVisible = false;
-                    formsPlot1.Refresh();
-                    Text = $"No point selected";
-                }
-            };
+            formsPlot1.MouseMove += OnMouseMoveCr;
 
             formsPlot1.MouseDown += (s, e) =>
             {
+                if (!showCrosshair) return;
                 textBox1.Visible = false;
                 if (toggleForMouse)
                 {
@@ -104,8 +60,9 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
                 graphs.Add(generateLine(minW, maxW, rand.Next(1, 100) * 100, "generic"));
             };
-           
-            checkedListBox1.ItemCheck += (s, e) => updateCheckList(s,e);
+
+            checkedListBox1.ItemCheck += updateCheckList;
+            button1.MouseMove += OnMouseMoveCr;
 
         }
         public void updateCheckList(object sender, ItemCheckEventArgs e)
@@ -126,7 +83,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                         break;
                     }
                 }
-                
+
             }
             else
             {
@@ -146,6 +103,88 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, this, formsPlot1, id, graphs);
 
             return line;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (showCrosshair == true)
+            {
+                showCrosshair = false;
+                crosshair.IsVisible = false;
+                button1.Text = "Show Crosshair";
+                for (int i = 0; i < graphs.Count; i++)
+                {
+                    graphs[i].unhighlightLine();
+                }
+            }
+            else
+            {
+                showCrosshair = true;
+                crosshair.IsVisible = true;
+                button1.Text = "Hide Crosshair";
+                //Invoke(formsPlot1.MouseMove);
+                //formsPlot1.Invoke(formsPlot1.MouseMove, null);
+                //formsPlot1.MouseMove = button1.MouseMove;
+            }
+            formsPlot1.Refresh();
+        }
+
+
+
+        private void OnMouseMoveCr(object sender, MouseEventArgs e)
+        {
+            if (!showCrosshair) return;
+            Pixel mousePixel = new(e.Location.X, e.Location.Y);
+            if (sender == button1)
+            {
+                mousePixel.X += button1.Left;
+                mousePixel.Y += button1.Top;
+            }
+            
+            Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
+            DataPoint closestPoint = DataPoint.None;
+            double closestDistance2 = double.MaxValue;
+            int specificGraphI = 0;
+            for (int i = 0; i < graphs.Count; i++)
+            {
+                if (toggleForMouse == false)
+                {
+                    graphs[i].unhighlightLine();
+                }
+                DataPoint nearest = rbNearestXY
+                   ? graphs[i].line.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
+                   : graphs[i].line.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
+                double distance2 = Math.Pow(nearest.X - mouseLocation.X, 2) + Math.Pow(nearest.Y - mouseLocation.Y, 2);
+                if (distance2 < closestDistance2)
+                {
+                    specificGraphI = i;
+                    closestDistance2 = distance2;
+                    closestPoint = nearest;
+                }
+            }
+
+
+
+            if (closestPoint.IsReal)
+            {
+                if (toggleForMouse == false)
+                {
+                    graphs[specificGraphI].highlightLine();
+
+                    crosshair.IsVisible = true;
+                    crosshair.Position = closestPoint.Coordinates;
+                    formsPlot1.Refresh();
+                    Text = $"Wavelength={closestPoint.X:0.##}nm, Y={closestPoint.Y * 1E4:0.##}Wm^-2/nm";//Selected Index={closestPoint.Index},
+                }
+
+
+            }
+            if (!closestPoint.IsReal && crosshair.IsVisible)
+            {
+                crosshair.IsVisible = false;
+                formsPlot1.Refresh();
+                Text = $"No point selected";
+            }
         }
     }
 }

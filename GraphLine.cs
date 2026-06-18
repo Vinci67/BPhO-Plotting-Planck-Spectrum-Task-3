@@ -101,6 +101,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             removeButton.BringToFront();
             removeButton.Visible = false;
             removeButton.Text = "Remove Line";
+            removeButton.Size = new Size(80, 30);
             removeButton.Location = new Point(200, 40);
             
             return removeButton;

@@ -27,7 +27,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         public string id;
         
         private double highestIndex = 0;
-        static private int datapoints = 1000;
+        static private int datapoints = 100;
         private double datapointsInvisibleRange = 0;
         private double minVisW = 0;
         private double maxVisW = 750E-9;

@@ -66,7 +66,10 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
             checkedListBox1.ItemCheck += updateCheckList;
             button1.MouseMove += OnMouseMoveCr;
+            checkedListBox1.MouseMove += OnMouseMoveCr;
 
+            this.Invalidate(true);
+            this.Refresh();
         }
         public void updateCheckList(object sender, ItemCheckEventArgs e)
         {
@@ -144,16 +147,18 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 mousePixel.X += button1.Left;
                 mousePixel.Y += button1.Top;
             }
+            else if (sender == checkedListBox1)
+            {
+                mousePixel.X += checkedListBox1.Left;
+                mousePixel.Y += checkedListBox1.Top;
+            }
             Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
             DataPoint closestPoint = DataPoint.None;
             double closestDistance2 = double.MaxValue;
             int specificGraphI = 0;
             for (int i = 0; i < graphs.Count; i++)
             {
-                if (toggleForMouse == false)
-                {
-                    graphs[i].unhighlightLine();
-                }
+                
                 DataPoint nearest = rbNearestXY
                    ? graphs[i].line.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
                    : graphs[i].line.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
@@ -165,11 +170,16 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                     closestPoint = nearest;
                 }
             }
+            for (int i = 0; i < graphs.Count; i++)
+            {
+                if (toggleForMouse == false && i != specificGraphI)
+                {
+                    graphs[i].unhighlightLine();
+                }
+            }
 
 
-
-
-            if (closestPoint.IsReal)
+                if (closestPoint.IsReal)
             {
                 if (toggleForMouse == false)
                 {

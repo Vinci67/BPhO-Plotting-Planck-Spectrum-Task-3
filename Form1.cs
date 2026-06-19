@@ -21,14 +21,17 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private bool rbNearestXY = false; // set to false if want to make crosshair always visible, set to true if only want it visible near the line
         private List<GraphLine> graphs = new List<GraphLine>();
         private bool toggleForMouse = false;
+        private int toggleLineIndex = 0;
         private Random rand = new Random();
         private List<string> checklistPrev = new List<string>();
         private bool showCrosshair = true;
+        private Coordinates previousMouseLocation = new Coordinates();
+        
 
         public Form1()
         {
-
             InitializeComponent();
+            Debug.WriteLine(previousMouseLocation);
             graphs.Add(generateLine(minW, maxW, 4000, "generic"));
             graphs.Add(generateLine(minW, maxW, 5000, "generic"));
             graphs.Add(generateLine(minW, maxW, 6000, "generic"));
@@ -122,9 +125,10 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 showCrosshair = true;
                 crosshair.IsVisible = true;
                 button1.Text = "Hide Crosshair";
-                //Invoke(formsPlot1.MouseMove);
-                //formsPlot1.Invoke(formsPlot1.MouseMove, null);
-                //formsPlot1.MouseMove = button1.MouseMove;
+                if (toggleForMouse)
+                {
+                    graphs[toggleLineIndex].highlightLine();
+                }
             }
             formsPlot1.Refresh();
         }
@@ -140,7 +144,6 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 mousePixel.X += button1.Left;
                 mousePixel.Y += button1.Top;
             }
-            
             Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
             DataPoint closestPoint = DataPoint.None;
             double closestDistance2 = double.MaxValue;
@@ -165,10 +168,12 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
 
 
+
             if (closestPoint.IsReal)
             {
                 if (toggleForMouse == false)
                 {
+                    toggleLineIndex = specificGraphI;
                     graphs[specificGraphI].highlightLine();
 
                     crosshair.IsVisible = true;
@@ -179,7 +184,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
 
             }
-            if (!closestPoint.IsReal && crosshair.IsVisible)
+            if (!closestPoint.IsReal && crosshair.IsVisible && !toggleForMouse)
             {
                 crosshair.IsVisible = false;
                 formsPlot1.Refresh();

@@ -14,8 +14,8 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         public double h = 6.626E-34;
         public double kB = 1.381E-23;
         public double c = 2.998E8;
-        public double minW = 200E-9;
-        public double maxW = 2500E-9;
+        private double maxTemp = 800;
+        private double tempDebye = 2000;
         public ScottPlot.Plottables.Crosshair crosshair;
         private ScottPlot.Plottables.Scatter graph1;
         private bool rbNearestXY = false; // set to false if want to make crosshair always visible, set to true if only want it visible near the line
@@ -26,19 +26,18 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private List<string> checklistPrev = new List<string>();
         private bool showCrosshair = true;
         private Coordinates previousMouseLocation = new Coordinates();
-        
+
 
         public Form1()
         {
             InitializeComponent();
             Debug.WriteLine(previousMouseLocation);
-            graphs.Add(generateLine(minW, maxW, 4000, "generic"));
-            graphs.Add(generateLine(minW, maxW, 5000, "generic"));
-            graphs.Add(generateLine(minW, maxW, 6000, "generic"));
-            graphs.Add(generateLine(minW, maxW, 8000, "generic"));
-            formsPlot1.Plot.XLabel("Wavelength / nm");
-            formsPlot1.Plot.YLabel("Irradiance / Wm^-2/nm     x10^4");
-            formsPlot1.Plot.Title("Solar Irradiance vs Wavelength");
+            graphs.Add(generateLine(500, maxTemp, "generic"));
+            graphs.Add(generateLine(150, maxTemp, "generic"));
+            graphs.Add(generateLine(800, maxTemp, "generic"));
+            formsPlot1.Plot.XLabel("T /K");
+            formsPlot1.Plot.YLabel("Molar heat Capacity / (J/mol/K)");
+            formsPlot1.Plot.Title("Einstein model of solid molar heat capacity");
             formsPlot1.Refresh();
             crosshair = formsPlot1.Plot.Add.Crosshair(10, 10);
             crosshair.IsVisible = true;
@@ -61,7 +60,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             buttonAddLine.Click += (s, e) =>
             {
 
-                graphs.Add(generateLine(minW, maxW, rand.Next(1, 100) * 100, "generic"));
+                graphs.Add(generateLine(rand.Next(40,2500), maxTemp, "generic"));
             };
 
             checkedListBox1.ItemCheck += updateCheckList;
@@ -76,7 +75,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             string currentItem = checkedListBox1.Items[e.Index].ToString();
             if (checklistPrev.Contains(currentItem))
             {
-                double temp = int.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
+                double temp = double.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
                 foreach (GraphLine line in graphs)
                 {
                     if (line.id == currentItem)
@@ -94,8 +93,8 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             else
             {
                 checklistPrev.Add(currentItem);
-                double temp = int.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
-                graphs.Add(generateLine(minW, maxW, temp, currentItem));
+                double tempD = double.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
+                graphs.Add(generateLine(tempD, maxTemp, currentItem));
             }
         }
         public double plankSpectrumEquation(double wavelength, double temp)
@@ -104,9 +103,9 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             return 1E-13 * Math.PI * (2 * h * c * c) / (Math.Pow(wavelength, 5)) * (1 / (Math.Exp(h * c / (wavelength * kB * temp)) - 1.0)); // return in nm *E4
         }
 
-        private GraphLine generateLine(double minWavelength, double maxWavelength, double temp, string id)
+        private GraphLine generateLine(double tempDebye, double tempMax, string id)
         {
-            GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, this, formsPlot1, id, graphs);
+            GraphLine line = new GraphLine(tempDebye, tempMax, this, formsPlot1, id, graphs);
 
             return line;
         }
@@ -158,7 +157,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             int specificGraphI = 0;
             for (int i = 0; i < graphs.Count; i++)
             {
-                
+
                 DataPoint nearest = rbNearestXY
                    ? graphs[i].line.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
                    : graphs[i].line.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
@@ -179,7 +178,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             }
 
 
-                if (closestPoint.IsReal)
+            if (closestPoint.IsReal)
             {
                 if (toggleForMouse == false)
                 {

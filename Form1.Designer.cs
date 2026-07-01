@@ -64,11 +64,12 @@
             // 
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Items.AddRange(new object[] { "Proxima Centauri - 3050K", "Sun - 5800K", "Sirius - 10000K", "Rigel - 12000K" });
+            checkedListBox1.Items.AddRange(new object[] { "Au - 170K", "Cu - 343.5K", "Ti - 420K", "Al - 428K","Fe - 470K","Si- 645K", "C - 2230K" });
             checkedListBox1.Location = new Point(528, 36);
-            checkedListBox1.Name = "checkedListBox1";
+            checkedListBox1.Name = "Debye temperatures";
             checkedListBox1.Size = new Size(162, 114);
             checkedListBox1.TabIndex = 3;
+            //checkedListBox1.SelectedIndexChanged += checkedListBox1_SelectedIndexChanged;
             // 
             // button1
             // 
@@ -102,6 +103,8 @@
         private TextBox textBox1;
         private Button buttonAddLine;
         private CheckedListBox checkedListBox1;
+
+        //private CheckedListBox checkedListBox1;
         private Button button1;
     }
 }

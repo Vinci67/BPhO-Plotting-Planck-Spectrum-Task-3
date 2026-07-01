@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
+//test
 namespace BPhO__Plotting_Planck_Spectrum_Task_3
 {
     internal class GraphLine : IDisposable
